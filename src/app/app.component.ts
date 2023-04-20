@@ -2,14 +2,12 @@ import { Component } from '@angular/core';
 
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
-import { FlightSearchComponent } from './flight-booking/flight-search/flight-search.component';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
-  imports: [SidebarComponent, NavbarComponent, FlightSearchComponent],
+  imports: [SidebarComponent, NavbarComponent, RouterOutlet],
   selector: 'app-flight-app',
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
-export class AppComponent {
-  protected readonly title = 'Hello World!';
-}
+export class AppComponent {}
