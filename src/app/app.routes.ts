@@ -1,10 +1,5 @@
 import { Route } from '@angular/router';
 
-import { AirportsComponent } from './flight-booking/airports/airports.component';
-import { HomeComponent } from './components/home/home.component';
-
-import flightBookingRoutes from './flight-booking/flight-booking.routes';
-
 export const appRoutes: Route[] = [
   {
     path: '',
@@ -15,18 +10,21 @@ export const appRoutes: Route[] = [
   {
     path: 'airports',
     title: 'Airports',
-    component: AirportsComponent,
+    // component: AirportsComponent,
+    loadComponent: () => import('./components/airports/airports.component'),
   },
   {
     path: 'home',
     title: 'Home',
-    component: HomeComponent,
+    // component: HomeComponent,
+    loadComponent: () => import('./components/home/home.component'),
   },
 
   {
     path: 'flight-booking',
     title: 'Flight Booking',
-    children: flightBookingRoutes,
+    // children: flightBookingRoutes,
+    loadChildren: () => import('./flight-booking/flight-booking.routes'),
   },
 
   /*{
