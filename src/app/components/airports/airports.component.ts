@@ -17,3 +17,5 @@ export class AirportsComponent {
       .subscribe((airports) => this.airports.set(airports));
   }
 }
+
+export default AirportsComponent;
