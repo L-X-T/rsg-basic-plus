@@ -17,7 +17,7 @@
 
 ## Preparation: Airport component
 
-In this exercise, you will expand your application by one page that lists all airports. You can orientate yourself by the existing `FlightSearchComponent`. The web API with the airports can be found here: `http://www.angular.at/api/airport`.
+In this exercise, you will expand your application by one page that lists all airports. You can orientate yourself by the existing `FlightSearchComponent`. The web API with the airports can be found here: `https://demo.angulararchitects.io/api/Airport`.
 
 Please note that the returned data is just an array with strings. For data access you will write an `AirportService` within the component's folder.
 
@@ -89,7 +89,7 @@ You can follow these steps:
    </p>
    </details>
 
-3. Consider the Web API at `http://www.angular.at/api/airport` (if you need a secure URL try this one: `https://demo.angulararchitects.io/api/Airport`). Note that this Web API responds with either XML or JSON, and the answer is just an **array of strings**.
+3. Consider the Web API at `https://demo.angulararchitects.io/api/Airport` (if you need a secure URL try this one: `https://demo.angulararchitects.io/api/Airport`). Note that this Web API responds with either XML or JSON, and the answer is just an **array of strings**.
 
    An example of the JSON-based answer can be found here: http://www.angular.at/help. While the XML response uses Pascal-Case (eg ` From`), the JSON response uses the usual Camel case (eg ` from`). Thus, the practices of the two standards are taken into account.
 
@@ -103,7 +103,7 @@ You can follow these steps:
 
    `findAll(): Observable<string[]>`
 
-   **Attention:** The web API at http://www.angular.at/api/airport returns all airports as an array with string. This string contains the names of the airports. That's why you do not need an interface to represent airports.
+   **Attention:** The web API at https://demo.angulararchitects.io/api/Airport returns all airports as an array with string. This string contains the names of the airports. That's why you do not need an interface to represent airports.
 
    <details>
    <summary>Show code</summary>
@@ -119,7 +119,7 @@ You can follow these steps:
      providedIn: 'root',
    })
    export class AirportService {
-     private readonly url = 'http://www.angular.at/api/airport';
+     private readonly url = 'https://demo.angulararchitects.io/api/Airport';
 
      private readonly httpClient = inject(HttpClient);
 

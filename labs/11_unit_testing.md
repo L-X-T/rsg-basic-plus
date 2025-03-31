@@ -23,7 +23,7 @@ import { AppComponent } from './app.component';
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AppComponent]
+      declarations: [AppComponent],
     }).compileComponents();
   });
 
@@ -83,7 +83,7 @@ describe('Unit test: flight-search.component', () => {
       imports: [HttpClientTestingModule, RouterTestingModule, FlightBookingModule, SharedModule],
       providers: [
         // Add Providers if you need them for your tests
-      ]
+      ],
     });
 
     fixture = TestBed.createComponent(FlightSearchComponent);
@@ -131,7 +131,7 @@ Start your test with the command `npm test`.
 
        const httpTestingController = TestBed.inject(HttpTestingController);
        const req = httpTestingController.expectOne(
-         'http://www.angular.at/api/flight?from=Graz&to=Hamburg'
+         'https://demo.angulararchitects.io/api/Flight?from=Graz&to=Hamburg'
        );
        // req.request.method === 'GET'
 

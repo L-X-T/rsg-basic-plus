@@ -322,7 +322,7 @@ In this exercise you create the opportunity to edit the flight presented in the 
 
    ```typescript
    findById(id: string): Observable<Flight> {
-     const url = 'http://www.angular.at/api/flight';
+     const url = 'https://demo.angulararchitects.io/api/Flight';
      const params = new HttpParams().set('id', id);
      const headers = new HttpHeaders().set('Accept', 'application/json');
 
@@ -330,7 +330,7 @@ In this exercise you create the opportunity to edit the flight presented in the 
    }
 
    save(flight: Flight): Observable<Flight> {
-     const url = 'http://www.angular.at/api/flight';
+     const url = 'https://demo.angulararchitects.io/api/Flight';
      const headers = new HttpHeaders().set('Accept', 'application/json');
 
      return this.http.post<Flight>(url, flight, { headers });

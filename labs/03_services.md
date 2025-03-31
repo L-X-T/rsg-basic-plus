@@ -40,7 +40,7 @@ To do this, you can follow the points below or just look up if necessary.
      private readonly http = inject(HttpClient);
 
      find(from: string, to: string): Observable<Flight[]> {
-       const url = 'http://www.angular.at/api/flight';
+       const url = 'https://demo.angulararchitects.io/api/Flight';
        const headers = new HttpHeaders().set('Accept', 'application/json');
        const params = new HttpParams().set('from', from).set('to', to);
 
@@ -107,7 +107,7 @@ In case you did bonus task _Bonus: Edit flights_ above, you must now also outsou
 
 ```typescript
 save(flight: Flight): Observable<Flight> {
- const url = 'http://www.angular.at/api/flight';
+ const url = 'https://demo.angulararchitects.io/api/Flight';
  const headers = new HttpHeaders().set('Accept', 'application/json');
 
  return this.http.post<Flight>(url, flight, { headers });
@@ -122,6 +122,6 @@ save(flight: Flight): Observable<Flight> {
 Create a class member for the URL and the headers and use them in both methods:
 
 ```typescript
-private readonly url = 'http://www.angular.at/api/flight';
+private readonly url = 'https://demo.angulararchitects.io/api/Flight';
 private readonly headers = new HttpHeaders().set('Accept', 'application/json');
 ```

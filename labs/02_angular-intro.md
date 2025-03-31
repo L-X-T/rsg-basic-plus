@@ -78,7 +78,7 @@ In this first part of the exercise you will implement the `FlightSearchComponent
 
 5. Now implement the method _search_, so that it takes the _from_ and _to_ parameter and uses the injected `HttpClient` to search for flights and put them into `flights`.
 
-   Note: You can use this API endpoint: http://www.angular.at/api/flight
+   Note: You can use this API endpoint: https://demo.angulararchitects.io/api/Flight
 
    <details>
    <summary>Show source</summary>
@@ -86,7 +86,7 @@ In this first part of the exercise you will implement the `FlightSearchComponent
 
    ```typescript
    search(): void {
-     const url = 'http://www.angular.at/api/flight';
+     const url = 'https://demo.angulararchitects.io/api/Flight';
      const headers = new HttpHeaders().set('Accept', 'application/json');
      const params = new HttpParams().set('from', this.from).set('to', this.to);
 
@@ -338,7 +338,7 @@ Follow these steps:
    ```typescript
    save(): void {
      if (this.selectedFlight) {
-       const url = 'http://www.angular.at/api/flight';
+       const url = 'https://demo.angulararchitects.io/api/Flight';
        const headers = new HttpHeaders().set('Accept', 'application/json');
 
        this.http.post<Flight>(url, this.selectedFlight, { headers }).subscribe({

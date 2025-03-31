@@ -18,7 +18,7 @@
 
 In this exercise, you'll implement the presented lookahead. For this, you can use the following API:
 
-    http://www.angular.at/api/flight?from=G
+    https://demo.angulararchitects.io/api/Flight?from=G
 
 As you see in this URL, the API takes a parameter for filtering flights with respect to a specific airport name.
 
@@ -91,7 +91,7 @@ Important note:
 
    ```typescript
    load(from: string): Observable<Flight[]> {
-     const url = "http://www.angular.at/api/flight";
+     const url = "https://demo.angulararchitects.io/api/Flight";
      const params = new HttpParams().set('from', from);
      const headers = new HttpHeaders().set('Accept', 'application/json');
 
@@ -208,7 +208,7 @@ To finish this implementation, you'll need the operators `pairwise` and `map`. Y
 ```typescript
 this.diff$ = this.flights$.pipe(
   pairwise(),
-  map(([a, b]) => b.length - a.length)
+  map(([a, b]) => b.length - a.length),
 );
 ```
 
@@ -274,7 +274,7 @@ In this example, you'll introduce another observable that simulates the network 
    this.online$ = interval(2000).pipe(
      startWith(0),
      map((_) => Math.random() < 0.5),
-     distinctUntilChanged()
+     distinctUntilChanged(),
    );
 
    const input$ = this.control.valueChanges.pipe(debounceTime(300));
@@ -282,7 +282,7 @@ In this example, you'll introduce another observable that simulates the network 
    this.flights$ = combineLatest([input$, this.online$]).pipe(
      filter(([, online]: [string, boolean]) => online),
      map(([input]) => input),
-     switchMap((input) => this.load(input))
+     switchMap((input) => this.load(input)),
    );
    ```
 
@@ -421,7 +421,7 @@ Now, within `ngOnInit`, connect `addToBasket$` to `basket$` so that `basket$` al
 this.basket$ = this.addToBasket$.pipe(
   scan((acc, flight) => {
     return [...acc, flight];
-  }, [])
+  }, []),
 );
 ```
 
@@ -500,10 +500,13 @@ export interface SwitchMapRetryOptions {
 
 const defaults: SwitchMapRetryOptions = {
   delayMsec: 500,
-  maxRetries: 3
+  maxRetries: 3,
 };
 
-export function switchMapBackoff<T, U>(projector: Projector<T, U>, { maxRetries, delayMsec }: SwitchMapRetryOptions = defaults) {
+export function switchMapBackoff<T, U>(
+  projector: Projector<T, U>,
+  { maxRetries, delayMsec }: SwitchMapRetryOptions = defaults,
+) {
   let i = 0;
   return pipe(
     switchMap((item: T) =>
@@ -515,11 +518,11 @@ export function switchMapBackoff<T, U>(projector: Projector<T, U>, { maxRetries,
                 return throwError(err);
               }
               return of(err).pipe(delay(Math.pow(2, i) * delayMsec));
-            })
-          )
-        )
-      )
-    )
+            }),
+          ),
+        ),
+      ),
+    ),
   );
 }
 ```
