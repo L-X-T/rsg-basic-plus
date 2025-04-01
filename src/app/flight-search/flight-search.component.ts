@@ -5,10 +5,10 @@ import { Flight } from '../entities/flight';
 import { FormsModule } from '@angular/forms';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FlightService } from './flight.service';
-import { AsyncCityPipe } from '../shared/pipes/async-city.pipe';
+import { CityPipe } from '../shared/pipes/city.pipe';
 
 @Component({
-  imports: [CommonModule, FormsModule, AsyncCityPipe],
+  imports: [CommonModule, FormsModule, CityPipe],
   selector: 'app-flight-search',
   templateUrl: './flight-search.component.html',
   styleUrl: './flight-search.component.css',
