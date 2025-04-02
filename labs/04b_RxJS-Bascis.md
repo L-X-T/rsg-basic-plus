@@ -91,8 +91,6 @@ You can follow these steps:
 
 3. Consider the Web API at `https://demo.angulararchitects.io/api/Airport` (if you need a secure URL try this one: `https://demo.angulararchitects.io/api/Airport`). Note that this Web API responds with either XML or JSON, and the answer is just an **array of strings**.
 
-   An example of the JSON-based answer can be found here: http://www.angular.at/help. While the XML response uses Pascal-Case (eg ` From`), the JSON response uses the usual Camel case (eg ` from`). Thus, the practices of the two standards are taken into account.
-
 4. In your project, create a `airports/airport.service.ts` file with a `AirportService` class:
 
    ```

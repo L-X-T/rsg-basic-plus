@@ -12,7 +12,7 @@ In this exercise, you will create a reactive form for editing flights.
 
 Caution: This lab assumes you already know some basics and thus is a bit more difficult and some things are left out intentionally ;-)
 
-1. **If** you do not have a `FlightEditComponent` yet: Create a `FlightEditComponent` in the `FlightBookingModule` and call it up in the template of the `FlightSearchComponent`.
+1. **If** you do not have a `FlightEditComponent` yet: Create a `FlightEditComponent` next to the `FlightSearchComponent` and call it up in the template of the `FlightSearchComponent`.
 
 **Important** if you cannot see your `FlightEditComponent`, make sure you've either added it, e.g. to the `SearchFormComponent` at the bottom, or you access it directly via the router. If you cannot see any debug messages in your `DevTools Console`, please make sure you checked `Verbose` in your browsers `Default Levels` settings.
 

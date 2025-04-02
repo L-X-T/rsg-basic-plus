@@ -49,7 +49,7 @@ npx ng add @cypress/schematic
    </p>
    </details>
 
-3. Now fire up your application with `npm start` or just `ng s` and test your e2e-testing by running `cypress run`.
+3. Now fire up your application with `ng serve` or just `ng s` and test your e2e-testing by running `cypress run`.
 
    **Note**: If you're using a **Nx workspace** you can just run `nx e2e flight-app-e2e`.
 

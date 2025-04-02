@@ -276,7 +276,7 @@ In this first part of the exercise you will implement the `FlightSearchComponent
 
 12. Check for compilation errors on the console.
 
-13. Start your solution (`npm start`) and test it in the browser by search for flights from `Graz` to `Hamburg`. A list with other supported (European) cites can be found [here](http://angular.at/api/airport).
+13. Start your solution (`ng s`) and test it in the browser by search for flights from `Graz` to `Hamburg`. A list with other supported (European) cites can be found [here](https://demo.angulararchitects.io/api/Airport).
 
 ### Use the debugger
 

@@ -160,7 +160,7 @@ transform(flights: Flight[], delayed: boolean): Flight[] {
 A description of the methods offered by the Array class can be found here:
 [https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Array](https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Array)
 
-### Service for a Pipe \*
+<!-- ### Service for a Pipe \*
 
 Outsource the logic with the switch block to a new `AirportService`. Inject the `AirportService` into the pipe (works like components). Then call the service in the `transform` method and test your solution.
 
@@ -179,4 +179,4 @@ Write a new `AsyncCityPipe` that injects this service. The `transform` method sh
 [...] {{ flight.from | asyncCity:'short' | async }} [...]
 ```
 
-**Important:** The pipe must be `pure` to avoid problems with the data binding. Pipes that are not pure are re-executed after each event. The fact that the pipe itself triggers a data event through the server request would result in an infinite loop.
+**Important:** The pipe must be `pure` to avoid problems with the data binding. Pipes that are not pure are re-executed after each event. The fact that the pipe itself triggers a data event through the server request would result in an infinite loop. -->

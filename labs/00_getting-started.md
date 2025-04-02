@@ -37,11 +37,11 @@ Tip: Install and checkout the following useful tools for developing with Angular
 
 2. Open the starter kit in WebStorm/IntelliJ. This is the folder containing the `package.json`.
 
-3. Switch to the terminal and start the starter kit with `npm start`.
+3. Switch to the terminal and start the starter kit with `ng serve`.
 
    ![](https://i.imgur.com/7YG65wz.png)
 
-   If you do not want to run the project in the IDE, you can also use `cmd` (under Windows) or `bash` (under Linux and OS X) to open a shell in the root of the project and use `npm start`.
+   If you do not want to run the project in the IDE, you can also use `cmd` (under Windows) or `bash` (under Linux and OS X) to open a shell in the root of the project and use `ng s`.
 
 4. Open it in the browser (`http://localhost:4200`). You should now see the demo application.
 
@@ -76,7 +76,7 @@ In this part of the tutorial, you will pull (or download & extract `....zip`) th
 
 3. Change to the command line (`CTRL+SHIFT+C`) or to the integrated Terminal (`CTRL+SHIFT+ö`)
 
-4. Start the development server: `npm start`
+4. Start the development server: `ng serve`
 
    Note: The development server does not put the required bundles on the disk but only keeps them in the main memory. When you change the source files, it recreates the bundles and then notifies the browser.
    To serve individual apps run `ng serve --project=<appname>`
@@ -108,7 +108,7 @@ In this part, you will take a closer look at the starter kit to familiarize your
 5. If you have not already done so, start the development web server:
 
    ```
-   npm start
+   ng serve
    ```
 
 6. Open the project in the browser.
