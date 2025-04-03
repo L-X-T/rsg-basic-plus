@@ -29,11 +29,12 @@ If your `app.component.spec.ts` fails you can replace it with this one:
 ```typescript
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AppComponent]
+      imports: [AppComponent, RouterTestingModule],
     }).compileComponents();
   });
 
@@ -137,7 +138,7 @@ Start your test with the command `npm test`.
            provideHttpClientTesting(),
          ],
        }).compileComponents();
-         
+
        […]
      });
 
@@ -235,7 +236,7 @@ Follow the steps below:
        city = input<string[]>([]);
        validate = _ => null;
      }
-     
+
      @Pipe({ name: 'city' })
      class CityPipe implements PipeTransform {
        transform = v => v;
