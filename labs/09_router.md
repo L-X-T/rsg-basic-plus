@@ -184,7 +184,7 @@ If you want, guide the following through the exercise:
 
 9. Test your solution.
 
-## Bonus: Routes with hash fragment and tracing \*
+<!-- ## Bonus: Routes with hash fragment and tracing \*
 
 In order to influence the way the router works, the `forRoot` method accepts an object via the second optional parameter. This can be used to specify, for example, that routes are to be positioned in the hash fragment of the url (e.g. http://localhost:4200/#route instead of http://localhost:4200/route) or that the router should output tracing messages on the console:
 
@@ -194,11 +194,11 @@ RouterModule.forRoot(appRoutes, { useHash: true, enableTracing: true });
 
 Activate these options and make sure that the route is then placed in the hash fragment and that the router outputs information about the routing to the console.
 
-Afterwards disable the hash fragment again for the upcoming exercises: `useHash: false`
+Afterwards disable the hash fragment again for the upcoming exercises: `useHash: false` -->
 
 ## Parametrizable Routes
 
-In this exercise you will create a new component `FlightEditComponent` in the `FlightBookingModule`:
+In this exercise you will use your `FlightEditComponent`:
 
 ```
    AppComponent
