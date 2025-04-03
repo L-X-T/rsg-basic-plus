@@ -1,18 +1,21 @@
 # Reactive Forms
 
-- [Reactive Forms](#reactive-forms)
-  - [Edit flights \*](#edit-flights-)
-  - [Using Angular Validators \*](#using-angular-validators-)
-  - [Bonus: Load flight \*](#bonus-load-flight-)
-  - [Bonus: Save flight \*](#bonus-save-flight-)
+<!-- TOC -->
+* [Reactive Forms](#reactive-forms)
+  * [Edit flights \*](#edit-flights-)
+  * [Add it into FlightSearch \*](#add-it-into-flightsearch-)
+  * [Using Angular Validators \*](#using-angular-validators-)
+  * [Bonus: Load flight \*](#bonus-load-flight-)
+  * [Bonus: Save flight \*](#bonus-save-flight-)
+<!-- TOC -->
 
 ## Edit flights \*
 
 In this exercise, you will create a reactive form for editing flights.
 
-Caution: This lab assumes you already know some basics and thus is a bit more difficult and some things are left out intentionally ;-)
+Caution: This lab assumes you already know some basics, and thus it is a bit more difficult and some things are left out intentionally ;-)
 
-1. **If** you do not have a `FlightEditComponent` yet: Create a `FlightEditComponent` next to the `FlightSearchComponent` and call it up in the template of the `FlightSearchComponent`.
+1. **If** you do not have a `FlightEditComponent` yet: Create a `FlightEditComponent` in the `FlightBookingModule` and call it up in the template of the `FlightSearchComponent`.
 
 **Important** if you cannot see your `FlightEditComponent`, make sure you've either added it, e.g. to the `SearchFormComponent` at the bottom, or you access it directly via the router. If you cannot see any debug messages in your `DevTools Console`, please make sure you checked `Verbose` in your browsers `Default Levels` settings.
 
@@ -53,11 +56,11 @@ Caution: This lab assumes you already know some basics and thus is a bit more di
 
    @Component({ [...] })
    export class FlightEditComponent {
-     @Input({ required: true }) flight?: Flight | null;
+     readonly flight = input.required<Flight>();
 
-     editForm?: FormGroup;
+     protected readonly editForm?: FormGroup;
 
-     message = '';
+     protected message = '';
 
      [...]
    }
@@ -79,10 +82,13 @@ Caution: This lab assumes you already know some basics and thus is a bit more di
      [...]
    })
    export class FlightEditComponent {
-     [...]
+     readonly flight = input.required<Flight>();
 
      private readonly fb = inject(FormBuilder);
-
+     protected readonly editForm?: FormGroup;
+     
+     protected message = '';
+   
      [...]
    }
    ```
@@ -98,16 +104,17 @@ Caution: This lab assumes you already know some basics and thus is a bit more di
 
    ```typescript
    export class FlightEditComponent {
-     @Input({ required: true }) flight?: Flight | null;
-
-     readonly editForm = this.fb.group({
+     readonly flight = input.required<Flight>();
+   
+     private readonly fb = inject(FormBuilder);
+     protected readonly editForm = this.fb.group({
        id: [0],
        from: [''],
        to: [''],
        date: [''] // there are better ways to handle dates, but we'll keep things easy here
      });
 
-     message = '';
+     protected message = '';
 
      [...]
    }
@@ -141,7 +148,7 @@ Caution: This lab assumes you already know some basics and thus is a bit more di
    </p>
    </details>
 
-7. Make sure you update the form value when the `flight` member is changed. You can use the lifecycle method `ngOnChanges` and the `patchValue()` of the `FormGroup` object. You might also need to add the import of the `OnChanges` interface.
+7. Make sure you update the form value when the `flight` member is changed. You can use  an `effect` and the `patchValue()` of the `FormGroup` object.
 
    <details>
    <summary>Show source</summary>
@@ -151,10 +158,13 @@ Caution: This lab assumes you already know some basics and thus is a bit more di
    export class FlightEditComponent implements OnChanges {
        [...]
 
-       ngOnChanges(): void {
-         if (this.flight) {
-            this.editForm.patchValue(this.flight);
-         }
+       constructor() {
+         console.log(this.editForm.value);
+         console.log(this.editForm.valid);
+         console.log(this.editForm.touched);
+         console.log(this.editForm.dirty);
+   
+         effect(() => this.editForm.patchValue(this.flight()));
        }
 
        [...]
@@ -230,6 +240,55 @@ Caution: This lab assumes you already know some basics and thus is a bit more di
 
 10. Test your solution. If everything works, you should see every change you make to the form in the console output.
 
+## Add it into FlightSearch \*
+
+To use your newly create `FlightEditComponent` in the `FlightSearchComponent`, you need to add it to the `FlightSearchComponent` template.
+
+1. Add  the `flightToEdit` field to your `FlightSearchComponent`:
+  
+   ```typescript
+   protected selectedFlight?: Flight;
+   protected flightToEdit?: Flight;
+    ```
+
+2. Open the `flight-search.component.html` file and add the `FlightEditComponent` to the template.
+
+   <details>
+   <summary>Show source</summary>
+   <p>
+
+   ```html
+   @if (flightToEdit) {
+     <div class="card">
+       <div class="header">
+         <h2 class="title">Flight edit</h2>
+       </div>
+
+       <div class="content">
+         <app-flight-edit [flight]="flightToEdit" />
+       </div>
+     </div>
+   }
+   ```
+   
+   </p>
+   </details>
+
+3. Now you have to pass a `Flight` into `flightToEdit`. How can you implement that?
+
+   Hint: Add another button into your `FlightCard`'s content in the `@for` loop.
+
+   <details>
+   <summary>Show source</summary>
+   <p>
+
+   ```html
+   <button class="btn btn-default" (click)="flightToEdit = flight">Edit</button>
+   ```
+
+   </p>
+   </details>
+
 ## Using Angular Validators \*
 
 In this exercise you will validate the _from_ field with the built-in validators `required` and `minlength`.
@@ -241,7 +300,7 @@ In this exercise you will validate the _from_ field with the built-in validators
    <p>
 
    ```typescript
-   readonly editForm = this.fb.group({
+   protected readonly editForm = this.fb.group({
      id: [0, Validators.required],
      from: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(15)]],
      to: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(15)]],
@@ -303,6 +362,8 @@ findById(id: string): Observable<Flight> {
 </p>
 </details>
 
+Caution: To be able to set the flight `input` signal you need to use a `model` instead.
+
 <details>
 <summary>Show source for FlightEditComponent</summary>
 <p>
@@ -310,8 +371,7 @@ findById(id: string): Observable<Flight> {
 ```typescript
 this.flightService.findById(this.id).subscribe({
   next: (flight) => {
-    this.flight = flight;
-    this.editForm.patchValue(this.flight);
+    this.flight.set(flight);
     this.message = 'Success loading!';
   },
   error: (err: HttpErrorResponse) => {

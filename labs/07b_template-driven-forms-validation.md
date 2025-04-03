@@ -56,7 +56,7 @@ You can use the following procedure as a guide:
      [...]
    })
    export class CityValidatorDirective implements Validator {
-     validCities = ['Graz', 'Wien', 'Hamburg', 'Berlin'];
+     protected readonly validCities = ['Graz', 'Wien', 'Hamburg', 'Berlin'];
 
      validate(c: AbstractControl): ValidationErrors | null {
        if (c.value && !this.validCities.includes(c.value)) {
@@ -120,7 +120,7 @@ You can follow the following procedure:
      [...]
    })
    export class CityValidatorDirective implements Validator {
-     city = input.required<string[]>();
+     protected readonly city = input.required<string[]>();
 
      validate(c: AbstractControl): ValidationErrors | null {
        if (c.value && !this.city().includes(c.value)) {
@@ -329,15 +329,19 @@ After **importing** the validation directive in the `FlightSearchComponent`, it 
 
 ```html
 <form #flightSearchForm="ngForm" roundTrip>
-  [...] @if (flightSearchForm.errors['roundTrip']) {
+  [...]
+  
+  @if (flightSearchForm.errors['roundTrip']) {
   <div class="text-danger">Executing Async Validator</div>
-  } [...]
+  }
+  
+  [...]
 </form>
 ```
 
 ## Bonus: Parameterizable Multifield Validator \*\*
 
-The validator in the last example has hard-coded access to the fields `from` and `to`. Create a way to pass this information via data binding. To do this, use properties with the decorator `@Input`.
+The validator in the last example has hard-coded access to the fields `from` and `to`. Create a way to pass this information via data binding. To do this, use another input signal.
 
 ## Bonus: Asynchronous Multifield Validator \*\*\*
 

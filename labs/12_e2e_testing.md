@@ -18,28 +18,38 @@
 
 ## Preparation
 
-1. First of all, you need to make sure that Cypress is installed as a dev dependency. If not, this can be done automatically by running:
+1. First of all, you need to make sure that Cypress is already set up in your project. Try running:
 
-```bash
-npx ng add @cypress/schematic
+```shell
+ng e2e
 ```
 
-## Create a sanity check
+2. If not, you can add Cypress to your project by running this schematic:
+
+```shell
+ng add @cypress/schematic
+```
+
+## Setup Cypress and run a sanity check
 
 1. Create or switch the directory `/cypress/e2e` and create a new test file `app.cy.ts`.
 
    **Note**: If you're using a **Nx workspace** this file is found in the folder `apps/flight-app-e2e/src/integration`. You can remove the existing test because it will probably fail.
 
-2. Open the file `app.cy.ts` and add a sanity test.
+2. Rename the file `spec.cy.ts` to `app.cy.ts` and look at its sanity test.
 
    <details>
    <summary>Show Code</summary>
    <p>
 
    ```typescript
-   describe('flight-app', () => {
-     it('should do a sanity check', () => {
-       cy.visit('');
+   describe('flight app', () => {
+     beforeEach(() => {
+       cy.visit('/');
+     });
+
+     it('visits the initial page and check th title', () => {
+       cy.contains('Hello World!');
      });
 
      // next test goes here
@@ -49,38 +59,63 @@ npx ng add @cypress/schematic
    </p>
    </details>
 
-3. Now fire up your application with `ng serve` or just `ng s` and test your e2e-testing by running `cypress run`.
+3. Now fire up your application and Cypress with `ng e2e`.
 
    **Note**: If you're using a **Nx workspace** you can just run `nx e2e flight-app-e2e`.
 
-If everything is set up correctly you should get 1 passing test. If the test passes good, else please contact your trainer before you continue. Note that you could also run `cypress open` (or `nx e2e flight-app-e2e --watch` for Nx workspace) to load the Cypress testing GUI.
+If everything is set up correctly, you should get 1 passing test. If the test passes good, else please contact your trainer before you continue.
 
-### Bonus: Create a performance test \*
+Note, that you could also run `cypress run` (or `nx e2e flight-app-e2e` for Nx workspace) to run Cypress in `headless` mode.
+
+Note, that you could also run `cypress open` (or `nx e2e flight-app-e2e --watch` for Nx workspace) to open the Cypress GUI.
+
+For Cypress adjustments, you can also have a look at the `cypress.config.ts` and of course your `angular.json` in the root directory. In the latter, you can define your favorite browser (`electron` in my case):
+
+```json
+{
+  "builder": "@cypress/schematic:cypress",
+  "options": {
+    "devServerTarget": "essentials:serve",
+    "watch": true,
+    "headless": false,
+    "browser": "electron"
+  },
+  "configurations": {
+    "production": {
+      "devServerTarget": "essentials:serve:production"
+    }
+  }
+}
+```
+
+### Create a performance test \*
 
 We can create a simple performance test that checks if our app loads in less than a second.
 
-1. Since you're probably not familiar with the Cypress syntax you can just copy the following test into your `misc.cy.ts`:
+1. Since you're probably not familiar with the Cypress syntax, you can just copy the following test into your `misc.cy.ts`:
 
    <details>
    <summary>Show Code</summary>
    <p>
 
    ```typescript
-   it('should load page below 1 second', () => {
+   it('should load inital page below 1 second', () => {
      cy.visit('/', {
        onBeforeLoad: (win) => {
          win.performance.mark('start-loading');
        },
        onLoad: (win) => {
          win.performance.mark('end-loading');
-       },
+       }
      })
-       .its('performance')
-       .then((p) => {
-         p.measure('pageLoad', 'start-loading', 'end-loading');
-         const measure = p.getEntriesByName('pageLoad')[0];
-         expect(measure.duration).to.be.most(1000);
-       });
+      .its('performance')
+      .then((perf) => {
+        perf.measure('pageLoad', 'start-loading', 'end-loading');
+        const measure = perf.getEntriesByName('pageLoad')[0];
+        const duration = Math.round(measure.duration);
+        cy.log(`Page load duration: ${duration}`);
+        expect(duration).to.be.most(1000);
+      });
    });
    ```
 
@@ -149,21 +184,21 @@ You might have to modify the assertion of the `app-flight-card` count.
 <p>
 
 ```typescript
-describe('Flight Search E2E Test', () => {
+describe('flight booking feature', () => {
   beforeEach(() => {
-    cy.visit('');
+    cy.visit('/flight-booking/flight-search');
   });
 
   it('should verify that flight search is showing cards', () => {
     cy.contains('a', 'Flights').click();
-    cy.get('input[name=from]').clear().type('Graz');
-    cy.get('input[name=to]').clear().type('Hamburg');
+    cy.get('input[name=from]').clear().type('Hamburg');
+    cy.get('input[name=to]').clear().type('Graz');
     cy.get('form .btn').should(($button) => {
       expect($button).to.not.have.attr('disabled', 'disabled');
     });
 
-    cy.get('form .btn').click();
-    cy.get('flight-card').its('length').should('be.gte', 3);
+    cy.get('form .btn').first().click();
+    cy.get('app-flight-card').its('length').should('be.gte', 3);
   });
 });
 ```
@@ -209,14 +244,12 @@ Write a Test that mocks the search requests and returns the fixtures instead.
 
 ```typescript
 it('should search for flights from Wien to Eisenstadt by intercepting the network', () => {
-  cy.fixture('flights').then((flights) =>
-    cy.intercept('GET', 'https://demo.angulararchitects.io/api/Flight**', flights),
-  );
+  cy.fixture('flights').then((flights) => cy.intercept('GET', 'http://www.angular.at/api/flight**', flights));
   cy.contains('a', 'Flights').click();
   cy.get('input[name=from]').clear().type('Wien');
   cy.get('input[name=to]').clear().type('Eisenstadt');
-  cy.get('form .btn').click();
-  cy.get('flight-card').should('have.length', 3);
+  cy.get('form .btn').first().click();
+  cy.get('app-flight-card').should('have.length', 3);
 });
 ```
 
@@ -235,60 +268,15 @@ The provided solution also showcases the usage of alias and checks for non-exist
 
 ```typescript
 it('should search for flights from Wien to Eisenstadt by intercepting the network', () => {
-  cy.fixture('flights').then((flights) =>
-    cy.intercept('GET', 'https://demo.angulararchitects.io/api/Flight**', flights),
-  );
-  cy.contains('a', 'Flights').click();
-  cy.get('input[name=from]').clear().type('Wien');
-  cy.get('input[name=to]').clear().type('Eisenstadt');
-  cy.get('form .btn').click();
+  // [...]
+  cy.get('app-flight-card').should('have.length', 3);
 
-  cy.get('flight-card').first().as('flight-card');
+  cy.get('app-flight-card').first().as('flight-card');
   cy.get('@flight-card').find('> div').should('have.css', 'background-color', 'rgb(255, 255, 255)');
   cy.get('@flight-card').contains('button', 'Select').click();
   cy.get('@flight-card').find('> div').should('have.css', 'background-color', 'rgb(204, 197, 185)');
   cy.get('@flight-card').contains('button', 'Select').should('not.exist');
-  cy.get('@flight-card').contains('button', 'Remove').should('exist');
-});
-```
-
-</p>
-</details>
-
-### Test Disabled Search Button
-
-Implement a Test that checks whether the Search Button is correctly deactivated if the property `from` is not set.
-
-<details>
-<summary>Show Solution</summary>
-<p>
-
-```typescript
-it('should disable the search button when form is invalid', () => {
-  cy.contains('a', 'Flights').click();
-  cy.get('input[name=from]').clear();
-  cy.get('input[name=to]').clear();
-  cy.get('form .btn').should('be.disabled');
-});
-```
-
-</p>
-</details>
-
-### Test Enabled Search Button
-
-Implement a Test that checks whether the Search Button is correctly activated if the properties `from` and `to` are set.
-
-<details>
-<summary>Show Solution</summary>
-<p>
-
-```typescript
-it('should enable the search button when form is valid', () => {
-  cy.contains('a', 'Flights').click();
-  cy.get('input[name=from]').clear().type('Wien');
-  cy.get('input[name=to]').clear().type('Frankfurt');
-  cy.get('form .btn').should('not.be.disabled');
+  cy.get('@flight-card').contains('button', 'Deselect').should('exist');
 });
 ```
 

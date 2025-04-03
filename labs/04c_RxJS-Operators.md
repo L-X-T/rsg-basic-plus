@@ -14,63 +14,64 @@
     - [Bonus: Custom Operator: switchMapRetry \*\*\*](#bonus-custom-operator-switchmapretry-)
     - [Bonus: Custom Operator: switchMapBackoff for Exponential Backoff \*\*\*](#bonus-custom-operator-switchmapbackoff-for-exponential-backoff-)
 
-## Simple Lookahead
+## Preparation: FlightLookaheadComponent
 
-In this exercise, you'll implement the presented lookahead. For this, you can use the following API:
+In this exercise, you will expand your application by one component that lists all flights departing from a chosen airport. So once again we add a component:
 
-    https://demo.angulararchitects.io/api/Flight?from=G
+You can follow these steps:
 
-As you see in this URL, the API takes a parameter for filtering flights with respect to a specific airport name.
+1. Start by creating your new `FlightLookaheadComponent` in your project's root. To generate the files needed, run the following command (or use your IDE):
 
-Important note:
-
-1. Open the file `app.module.ts` of the `flight-app` (ensure you're in the right directory, like: `src/app`) and make sure, that the `ReactiveFormsModule` is imported into the `AppModule`.
-
-   <details>
-   <summary>Show code</summary>
-   <p>
-
-   ```typescript
-   [...]
-   import { ReactiveFormsModule } from '@angular/forms';
-   [...]
-
-   @NgModule({
-     imports: [
-       BrowserModule,
-       HttpClientModule,
-       ReactiveFormsModule,
-       [...]
-     ],
-     [...]
-   })
-   export class AppModule {}
+   ```
+   ng g c flight-lookahead
    ```
 
-   </p>
-   </details>
-
-2. Switch to the file _app.component.html_ again, and temporarily switch to the new component:
+2. Switch back to the file _app.component.html_, and add the new component:
 
    ```html
    […]
    <div class="content">
      <!--<app-flight-search />-->
-     <!--<app-airports />-->
+     <app-airports />
      <app-flight-lookahead />
    </div>
    […]
    ```
 
-3. Switch back to your new component and add the following properties:
+3. Make sure the component was also imported in _app.component.ts_.
+
+4. Check if you see the newly added component (below your airports).
+
+## Simple Lookahead
+
+In this exercise, you'll implement the presented lookahead. For this, you can use the following API:
+
+    http://www.angular.at/api/flight?from=Graz
+
+As you see in this URL, the API takes a parameter for filtering flights with respect to a specific airport name.
+
+Important note:
+
+1. Open your new `flight-lookahead.component.ts` file and add the import for the `ReactiveFormsModule`:
 
    ```typescript
-   control = new FormControl<string>('', { nonNullable: true }); // typed FormControl, since NG 14
-   flights$?: Observable<Flight[]>;
-   isLoading = false;
+   @Component({
+     //[...]
+     imports: [ReactiveFormsModule],
+     //[...]
+   })
+   export class AppModule {}
    ```
 
-4. Inject the `HttpClient` into the component.
+2. Now add the following properties:
+
+   ```typescript
+   protected readonly control = new FormControl<string>('', { nonNullable: true }); // typed FormControl, since NG 14
+   protected readonly flights$?: Observable<Flight[]>;
+   protected isLoading = false;
+   ```
+
+3. Inject the `HttpClient` into the component.
 
    <details>
    <summary>Show code</summary>
@@ -83,15 +84,15 @@ Important note:
    </p>
    </details>
 
-5. Create a method `load(from: string):Observable<Flight[]> { ... } `. Implement this method, so that all flights starting at the passed airport are returned.
+4. Create a method `load(from: string): Observable<Flight[]> { ... } `. Implement this method, so that all flights starting at the passed airport are returned.
 
    <details>
    <summary>Show code</summary>
    <p>
 
    ```typescript
-   load(from: string): Observable<Flight[]> {
-     const url = "https://demo.angulararchitects.io/api/Flight";
+   private load(from: string): Observable<Flight[]> {
+     const url = "http://www.angular.at/api/flight";
      const params = new HttpParams().set('from', from);
      const headers = new HttpHeaders().set('Accept', 'application/json');
 
@@ -102,15 +103,17 @@ Important note:
    </p>
    </details>
 
-6. Implement the Interface `OnInit`. Use the `ngOnInit` method to establish the needed dataflow between your input control (property `control`) and your result (`flights$`).
+5. Implement a constructor() to establish the dataflow between your input control (property `control`) and your result (`flights$`).
 
    <details>
    <summary>Show code</summary>
    <p>
 
    ```typescript
-   export class FlightLookaheadComponent implements OnInit {
-     ngOnInit(): void {
+   export class FlightLookaheadComponent {
+     // [field initializers]
+
+     constructor() {
        this.flights$ = this.control.valueChanges.pipe(
          debounceTime(300),
          tap(input => this.isLoading = true),
@@ -126,7 +129,34 @@ Important note:
    </p>
    </details>
 
-7. Open the file `flight-lookahead.component.html` and create an input element. Bind it to your control object. Also, display the value of your property `isLoading`.
+   Note: make sure to import all the necessary `RxJS` operators.
+
+   Alternatively, you could set this up directly in the field initializer:
+
+   <details>
+   <summary>Show code</summary>
+   <p>
+
+   ```typescript
+   export class FlightLookaheadComponent {
+     // [field initializers]
+
+     private readonly http = inject(HttpClient);
+
+     protected readonly flights$ = this.control.valueChanges.pipe(
+         debounceTime(300),
+         tap(input => this.isLoading = true),
+         switchMap(input => this.load(input)),
+         tap(v => this.isLoading = false)
+       );
+
+     [...]
+   }
+   ```
+
+   Which variant do you like better?
+
+6. Open the file `flight-lookahead.component.html` and create an input element. Bind it to your control object. Also, display the value of your property `isLoading`.
 
    <details>
    <summary>Show code</summary>
@@ -144,7 +174,9 @@ Important note:
          <input class="form-control" [formControl]="control" />
        </div>
 
-       <div *ngIf="isLoading">Loading ...</div>
+       @if (isLoading) {
+       <div>Loading ...</div>
+       }
      </div>
    </div>
    ```
@@ -152,7 +184,7 @@ Important note:
    </p>
    </details>
 
-8. Create a new table and bind it to your `flights$` property using the `async` pipe.
+7. Create a new table and bind it to your `flights$` property using the `async` pipe.
 
     <details>
     <summary>Show code</summary>
@@ -160,19 +192,31 @@ Important note:
 
    ```html
    <table class="table table-striped">
-     <tr *ngFor="let f of flights$ | async">
-       <td>{{f.id}}</td>
-       <td>{{f.from}}</td>
-       <td>{{f.to}}</td>
-       <td>{{f.date | date:'dd.MM.yyyy HH:mm'}}</td>
+     @for (f of flights$ | async; track f.id) {
+     <tr>
+       <td>{{ f.id }}</td>
+       <td>{{ f.from }}</td>
+       <td>{{ f.to }}</td>
+       <td>{{ f.date | date:'dd.MM.yyyy HH:mm' }}</td>
      </tr>
+     }
    </table>
    ```
 
     </p>
     </details>
 
-9. Test your solution.
+   **Please note:** for the AsyncPipe and the DatePipe to work, you need to import the `CommonModule` in your component:
+
+   ```typescript
+    import { CommonModule } from '@angular/common';
+
+    @Component({
+      imports: [CommonModule, ReactiveFormsModule]
+    })
+   ```
+
+8. Test your solution.
 
 ### Further Operators for Lookahead \*
 
@@ -180,11 +224,11 @@ In this exercise, you'll add the operators `distinctUntilChanged` and `filter` t
 
 1. Look at the docs for `distinctUntilChanged` at http://rxmarbles.com/#distinctUntilChanged and integrate it into your example. The goal is to prevent an additional http call when during a `debounce` period something is changed and undone again.
 
-1. Test your solution. You can use your browser's network tab find out how many http requests are sent out.
+2. Test your solution. You can use your browser's network tab find out how many http requests are sent out.
 
-1. Have a look at the docs of the operator `filter` at http://rxmarbles.com/#filter. Integrate it into your example to make sure that a http request is only done after the user has entered 3 characters at minimum.
+3. Have a look at the docs of the operator `filter` at http://rxmarbles.com/#filter. Integrate it into your example to make sure that a http request is only done after the user has entered 3 characters at minimum.
 
-1. Test your solution.
+4. Test your solution.
 
 ### Size Difference of two Search Results \*
 
@@ -193,10 +237,7 @@ In this example, you'll calculate the size difference of two subsequent search r
 For this, create an observable using the existing `flights$` observable:
 
 ```typescript
-this.diff$ = this.flights$
-  .pipe
-  // here we need some operators ...
-  ();
+this.diff$ = this.flights$.pipe(); // here we need some operators ...
 ```
 
 To finish this implementation, you'll need the operators `pairwise` and `map`. You can find a description for `pairwise` [here](https://rxjs-dev.firebaseapp.com/api/operators/pairwise) and [here](https://www.learnrxjs.io/operators/combination/pairwise).
@@ -210,6 +251,19 @@ this.diff$ = this.flights$.pipe(
   pairwise(),
   map(([a, b]) => b.length - a.length),
 );
+```
+
+```angular2html
+<div>
+  @let diff = diff$ | async;
+  @if (isLoading) {
+    Loading ...
+  } @else if (diff) {
+    #flights diff: {{ diff > 0 ? '+' + diff : diff }}
+  } @else {
+    &nbsp; // &nbpsc; insert a non-breaking space
+  }
+</div>
 ```
 
 </p>
@@ -226,7 +280,7 @@ In this example, you'll introduce another observable that simulates the network 
 2. Add the following lines to your `ngOnInit` method.
 
    ```typescript
-   ngOnInit(): void {
+   constructor() {
      [...]
 
      this.online$ = interval(2000).pipe(
@@ -289,11 +343,14 @@ In this example, you'll introduce another observable that simulates the network 
    </p>
    </details>
 
-4. Display the value of `online$` via `*ngIf` and the `async` pipe:
+4. Display the value of `online$` via `@if` and `@else` and the `async` pipe:
 
    ```html
-   <div *ngIf="online$ | async; else isOffline" style="background-color: darkgreen">Online</div>
-   <ng-template #isOffline><div style="background-color: darkred">Offline</div></ng-template>
+   @if (online$ | async) {
+   <div style="background-color: darkgreen">Online</div>
+   } @else {
+   <div style="background-color: darkred">Offline</div>
+   }
    ```
 
 5. Test your solution.
@@ -317,10 +374,10 @@ combineLatest([a$, b$, c$]).pipe(
 Now, let's try to introduce a button reloading the current result set. For this, add an observable and a click handler for the button:
 
 ```typescript
-private refreshClickSubject = new Subject<void>();
-refreshClick$ = this.refreshClickSubject.asObservable();
+private readonly refreshClickSubject = new Subject<void>();
+protected readonly refreshClick$ = this.refreshClickSubject.asObservable();
 
-refresh(): void {
+protected refresh(): void {
   this.refreshClickSubject.next();
 }
 ```
@@ -386,8 +443,8 @@ Let's allow to add flights to a shopping basket in a reactive way. For this, add
 ```typescript
 basket$: Observable<Flight[]>;
 
-private addToBasketSubject = new Subject<Flight>();
-readonly addToBasket$ = this.addToBasketSubject.asObservable();
+private readonly addToBasketSubject = new Subject<Flight>();
+protected readonly addToBasket$ = this.addToBasketSubject.asObservable();
 ```
 
 Also, add a method `select`:
@@ -402,16 +459,20 @@ Use `select` and `basket$` in your basket:
 
 ```html
 <table class="table table-striped">
-  <tr *ngFor="let f of flights$ | async">
+  @for (f of flights$ | async; track f.id) {
+  <tr>
     [...]
     <td><a (click)="select(f)">Select</a></td>
   </tr>
+  }
 </table>
 
-<pre *ngIf="basket$ | async as basket">{{ basket }}</pre>
+@if (basket$ | async) {
+<pre>{{ basket$ | async }}</pre>
+}
 ```
 
-Now, within `ngOnInit`, connect `addToBasket$` to `basket$` so that `basket$` always contains the selected flights. In order to prevent side effects, use the [scan operator](https://rxjs-dev.firebaseapp.com/api/operators/scan) for this.
+Now, within your `constructor`, connect `addToBasket$` to `basket$` so that `basket$` always contains the selected flights. In order to prevent side effects, use the [scan operator](https://rxjs-dev.firebaseapp.com/api/operators/scan) for this.
 
 <details>
 <summary>Solution</summary>
