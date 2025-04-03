@@ -12,7 +12,9 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "reset": "rm -rf node_modules && rm -f pnpm-lock.yaml && pnpm i",
-    "ng:update": "ng update @angular/core@19 @angular/cli@19 @angular-eslint/schematics@19"
+    "ng:update": "ng update @angular/core@19 @angular/cli@19 @angular-eslint/schematics@19",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
   },
   "private": true,
   "dependencies": {
@@ -40,11 +42,13 @@
     "@angular/cli": "~19.2.5",
     "@angular/compiler-cli": "19.2.4",
     "@angular/language-service": "19.2.4",
+    "@cypress/schematic": "3.0.0",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.13.14",
     "@typescript-eslint/eslint-plugin": "^8.28.0",
     "@typescript-eslint/parser": "^8.28.0",
     "@typescript-eslint/types": "^8.28.0",
+    "cypress": "13.17.0",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^8.10.0",
     "eslint-plugin-cypress": "^3.6.0",
