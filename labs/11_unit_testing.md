@@ -152,7 +152,7 @@ Start your test with the command `npm test`.
        component['search']();
 
        const httpTestingController = TestBed.inject(HttpTestingController);
-       const req = httpTestingController.expectOne('http://www.angular.at/api/flight?from=Graz&to=Hamburg');
+       const req = httpTestingController.expectOne('https://demo.angulararchitects.io/api/Flight?from=Graz&to=Hamburg');
        // req.request.method === 'GET'
 
        req.flush([

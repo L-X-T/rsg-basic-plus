@@ -106,16 +106,16 @@ We can create a simple performance test that checks if our app loads in less tha
        },
        onLoad: (win) => {
          win.performance.mark('end-loading');
-       }
+       },
      })
-      .its('performance')
-      .then((perf) => {
-        perf.measure('pageLoad', 'start-loading', 'end-loading');
-        const measure = perf.getEntriesByName('pageLoad')[0];
-        const duration = Math.round(measure.duration);
-        cy.log(`Page load duration: ${duration}`);
-        expect(duration).to.be.most(1000);
-      });
+       .its('performance')
+       .then((perf) => {
+         perf.measure('pageLoad', 'start-loading', 'end-loading');
+         const measure = perf.getEntriesByName('pageLoad')[0];
+         const duration = Math.round(measure.duration);
+         cy.log(`Page load duration: ${duration}`);
+         expect(duration).to.be.most(1000);
+       });
    });
    ```
 
@@ -244,7 +244,9 @@ Write a Test that mocks the search requests and returns the fixtures instead.
 
 ```typescript
 it('should search for flights from Wien to Eisenstadt by intercepting the network', () => {
-  cy.fixture('flights').then((flights) => cy.intercept('GET', 'http://www.angular.at/api/flight**', flights));
+  cy.fixture('flights').then((flights) =>
+    cy.intercept('GET', 'https://demo.angulararchitects.io/api/Flight**', flights),
+  );
   cy.contains('a', 'Flights').click();
   cy.get('input[name=from]').clear().type('Wien');
   cy.get('input[name=to]').clear().type('Eisenstadt');

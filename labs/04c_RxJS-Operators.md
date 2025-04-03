@@ -46,7 +46,7 @@ You can follow these steps:
 
 In this exercise, you'll implement the presented lookahead. For this, you can use the following API:
 
-    http://www.angular.at/api/flight?from=Graz
+    https://demo.angulararchitects.io/api/Flight?from=Graz
 
 As you see in this URL, the API takes a parameter for filtering flights with respect to a specific airport name.
 
@@ -92,7 +92,7 @@ Important note:
 
    ```typescript
    private load(from: string): Observable<Flight[]> {
-     const url = "http://www.angular.at/api/flight";
+     const url = "https://demo.angulararchitects.io/api/Flight";
      const params = new HttpParams().set('from', from);
      const headers = new HttpHeaders().set('Accept', 'application/json');
 
