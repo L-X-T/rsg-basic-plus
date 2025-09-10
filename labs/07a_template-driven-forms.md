@@ -52,7 +52,7 @@ You can use the following procedure as a guide:
    <pre>{{ flightSearchForm.controls['from'].errors | json }}</pre>
    } [...]
    
-   @if (flightSearchForm.controls['from']?.errors['minlength']) {
+   @if (flightSearchForm.controls['from'].errors?.['minlength']) {
    <div class="text-danger">... minlength ...</div>
    } [...]
    ```

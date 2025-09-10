@@ -254,6 +254,8 @@ In this first part of the exercise you will implement the `FlightSearchComponent
     </p>
     </details>
 
+   Please make sure to import either the `DatePipe` or the `CommonModule` (which includes the `DatePipe`) into your `FlightSearch` (by adding it to the component's imports array).
+
 10. Add a third section to your template. It should present the selected flight:
 
 ```html

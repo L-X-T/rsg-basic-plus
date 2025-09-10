@@ -23,8 +23,8 @@ In this exercise, you will first create the FlightCardComponent shown. Then you 
      templateUrl: './flight-card.component.html',
    })
    export class FlightCardComponent {
-     protected readonly item = input.required<Flight>();
-     protected readonly selected = model(false);
+     readonly item = input.required<Flight>();
+     readonly selected = model(false);
 
      select(): void {
        this.selected.set(true);

@@ -307,7 +307,7 @@ This should receive an Id as a url segment and a matrix parameter showDetails wh
    <p>
 
    ```html
-   <a class="btn btn-default" [routerLink]="['/flight-booking', 'flight-edit', item.id, { showDetails: true }]">
+   <a class="btn btn-default" [routerLink]="['/flight-booking', 'flight-edit', item().id, { showDetails: true }]">
      Edit
    </a>
    ```

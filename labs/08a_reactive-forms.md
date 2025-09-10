@@ -199,7 +199,7 @@ Caution: This lab assumes you already know some basics, and thus it is a bit mor
    </p>
    </details>
 
-**Please note** that later you should also add a subscription management (e.g. unsubscribe in ngOnDestroy) here.
+**Please note** that later you should also add a subscription management (e.g. use takeUntilDestroyed() operator) here.
 
 9. Now switch to the file `flight-edit.component.html`. Create a form there that you can link to the `FormGroups` in the `editForm` property.
 
